@@ -3,6 +3,14 @@
 #define ca3 32
 #define high HIGH
 #define low LOW
+#define output  OUTPUT
+#define input   INPUT
+
+//Led pin
+int base =2;
+int num = 8;
+int ledpin =A15; //LED共陽
+//ledPin end
 
 byte segs[7]={2,3,4,5,6,7,8};
 byte ssd[10][7]=
@@ -21,12 +29,15 @@ byte ssd[10][7]=
 
 int delaytime =4;
 void setup()
+
 {
-    for(byte i = 2 ; i <10 ; i++ )
+    for(int i = base ; i <base+num; i++ )
     {
         pinMode(i, OUTPUT);
     }
-    digitalWrite(9, HIGH);
+        pinMode(ledpin, output);
+    digitalWrite(ledpin,1);
+    digitalWrite(9, 0);
     pinMode(ca1, OUTPUT);
     pinMode(ca2, OUTPUT);
     pinMode(ca3, OUTPUT);
@@ -35,27 +46,55 @@ void setup()
 }
 void loop()
 {
-     for(unsigned int number = 0 ; number <10000; number++)
+    
+     for(int number = 20 ; number >=11; number--)
     {
         unsigned long starttime = millis();
-        for(unsigned long elapsed = 0 ; elapsed<1 ; elapsed=millis()-starttime)
+        for(unsigned long elapsed = 0 ; elapsed<500 ; elapsed=millis()-starttime)
         {
+            
             pickdigit(1);
             lightdigit(number%10,1);
             delay( delaytime );
             pickdigit(2);
             lightdigit((number/10)%10,2);
             delay( delaytime );
-            pickdigit(3);
-            lightdigit((number/100)%10,3);
-            delay( delaytime );
-            pickdigit(4);
-            lightdigit((number/1000)%10,4);
-            delay( delaytime );
-
+            
+            
         
         }
     }
+
+    for(int number = 10; number >=0; number--)
+    {
+        unsigned long starttime = millis();
+        for(unsigned long elapsed = 0 ; elapsed<500 ; elapsed=millis()-starttime)
+        {
+            
+            pickdigit(1);
+            lightdigit(number%10,1);
+            delay( delaytime );
+            pickdigit(2);
+            lightdigit((number/10)%10,2);
+            delay( delaytime );
+            digitalWrite(9,1);
+            digitalWrite(A13,HIGH);
+            digitalWrite(A15, LOW);
+            for (int i = base; i < base + num; i ++) {
+                digitalWrite(i, LOW);
+            }
+        
+            delay(number*10);
+            for (int i = base; i < base + num; i ++) {
+                digitalWrite(i, HIGH);
+            }
+            digitalWrite(A15, HIGH);
+            digitalWrite(A13,LOW);
+        
+        }
+    }
+     
+     
 }
 
 void pickdigit(int x)
