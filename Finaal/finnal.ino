@@ -1,3 +1,13 @@
+/*
+*摩斯密碼規則:
+*點為一個時間長度
+*劃為三個時間長度
+*單字間
+*
+*
+*
+*
+*/
 #define output OUTPUT
 #define high HIGH
 #define input INPUT
