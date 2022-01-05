@@ -8,6 +8,13 @@
 *
 *
 */
+
+String morseCode[4][4]={
+    "0010","0","100","1010",
+    "1000","00011","10000","11110",
+    "01","00111","00000","11100",
+    "11111","01111","00001","11000"};
+String morseTemp[2];
 #define output OUTPUT
 #define high HIGH
 #define input INPUT
@@ -31,6 +38,7 @@ Keypad pad =Keypad(makeKeymap(hexaKeys),rowp,colp,row,col);
 
 void setup()
 {
+
     pinMode(buzzer, output);
     lcd.begin(16,2);
     lcd.clear();
@@ -39,55 +47,137 @@ void setup()
     lcd.setCursor(0,1);
     lcd.print("____ Second");
     Serial.begin(9600);
+    
 }
 int cursorIndex=0;
 String inpu="";
 int taimu=0;
 int sw = 1;
 String ans = "" ;
+String Pswd="FE";
+int timer = 50;
+int r,c;
 void loop()
 {
+
     lcd.setCursor(cursorIndex,1);
     char ckey = pad.getKey();
-    if( ckey )
-    {
+    if( ckey ){
+        
         if(sw){
             
             lcd.print(ckey);
             inpu+=ckey;
             cursorIndex+=1;
-        }
-        else {
 
-            lcd.print(ckey);
+            if(cursorIndex==4)
+            {
+
+                cursorIndex=0;
+                lcd.setCursor(cursorIndex,1);
+                delay(1000);
+                lcd.print("____");
+                lcd.setCursor(cursorIndex,1);
+                taimu=inpu.toInt();
+                //Serial.println(inpu.toInt());
+                inpu="";
+                sw=0;
+                lcd.clear();
+                lcd.setCursor(0,0);
+                lcd.print("Input Passwd");
+                lcd.setCursor(0,1);
+                Pswd="";
+                generalPwd();
+                for(int i = 0 ; i < 2 ; i++)
+                {
+                    morse(morseTemp[i]);
+                    delay(1000);
+                }
+
+            }
+
+        }
+
+        else if(!sw) {
+            
             ans+=ckey;
+            lcd.print(ckey);
             cursorIndex+=1;
+            
+            
+            
+
+
+            if(cursorIndex==2)
+            {
+                cursorIndex=0;
+                lcd.setCursor(cursorIndex,1);
+                delay(1000);
+                lcd.print("      ");
+                lcd.setCursor(cursorIndex,1);
+
+                if( ans == Pswd)
+                {
+                    sw=1;
+                    ans="";
+                    lcd.clear();
+                    lcd.setCursor(0,0);
+                    lcd.print("Type in time");
+                    lcd.setCursor(0,1);
+                    lcd.print("____ Second");
+                }
+                else 
+                {
+                    lcd.clear();
+                    lcd.setCursor(0,0);
+                    lcd.print("Input Passwd");
+                    lcd.setCursor(0,1);
+                    ans="";
+                }
+            }
         }
 
     }
-    if(sw)
-    {
-        if(cursorIndex==4)
-        {
-            cursorIndex=0;
-            lcd.setCursor(cursorIndex,1);
-            delay(1000);
-            lcd.setCursor(cursorIndex,1);
-            lcd.print("    ");
-            taimu=inpu.toInt();
-            Serial.print(inpu.toInt()+1);
-            inpu="";
-            sw=0;
-        }
-    }
-    else
-    {
 
-    }
-
-
+  
+        
+        
+    
     
 }
 
+void generalPwd(){
+    r = random(0, 4);
+    c = random(0, 4);
+    Pswd+=hexaKeys[r][c];
+    morseTemp[0]=morseCode[r][c];
+    delay(100);
+    r = random(0, 4);
+    c = random(0, 4);
+    Pswd+=hexaKeys[r][c];
+    morseTemp[1]=morseCode[r][c];
+    Serial.println(Pswd);
+}
+
+void morse( String inStr )
+{
+    for( int i = 0 ; i <inStr.length(); i++ )
+    {
+        char outpu = inStr[i];
+        if( outpu == '0')
+        {
+            digitalWrite(A9, high);
+            delay(80);
+            digitalWrite(A9, low);
+            delay(100);
+        }
+        else {
+            digitalWrite(A9, high);
+            delay(240);
+            digitalWrite(A9, low);
+            delay(100);
+        }
+    }
+}
 
 
