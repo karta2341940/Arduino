@@ -57,9 +57,13 @@ String ans = "" ;
 String Pswd="FE";
 int timer = 50;
 int r,c;
+int countbee=4;
+
 void loop()
 {
-
+    
+    
+    
     lcd.setCursor(cursorIndex,1);
     char ckey = pad.getKey();
     if( ckey ){
@@ -79,7 +83,14 @@ void loop()
                 lcd.print("____");
                 lcd.setCursor(cursorIndex,1);
                 taimu=inpu.toInt();
-                //Serial.println(inpu.toInt());
+                lcd.clear();
+                lcd.setCursor(0,0);
+                for( taimu ; taimu >= 0 ; taimu --)
+                {
+                    lcd.clear();
+                    lcd.print(taimu);
+                    delay(1000);
+                }
                 inpu="";
                 sw=0;
                 lcd.clear();
@@ -88,14 +99,8 @@ void loop()
                 lcd.setCursor(0,1);
                 Pswd="";
                 generalPwd();
-                for(int i = 0 ; i < 2 ; i++)
-                {
-                    morse(morseTemp[i]);
-                    delay(1000);
-                }
-
+                
             }
-
         }
 
         else if(!sw) {
@@ -104,10 +109,6 @@ void loop()
             lcd.print(ckey);
             cursorIndex+=1;
             
-            
-            
-
-
             if(cursorIndex==2)
             {
                 cursorIndex=0;
@@ -134,14 +135,25 @@ void loop()
                     lcd.setCursor(0,1);
                     ans="";
                 }
+                countbee = 4;
             }
         }
 
     }
+    
 
-  
-        
-        
+    if(!sw && countbee)
+    {
+        for( countbee ; countbee>=0 ; countbee-- )
+        {
+            for(int i = 0 ; i < 2 ; i++)
+            {
+                morse(morseTemp[i]);
+            }
+        }
+    }
+       
+    
     
     
 }
@@ -178,6 +190,8 @@ void morse( String inStr )
             delay(100);
         }
     }
+    
+    delay(100);
 }
 
 
